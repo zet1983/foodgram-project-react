@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
+
+from .validators import check_username
 
 
 class User(AbstractUser):
@@ -8,6 +11,9 @@ class User(AbstractUser):
         max_length=150,
         verbose_name='Логин',
         help_text='Логин пользователя',
+        validators=[check_username,
+                    UnicodeUsernameValidator()
+                    ]
     )
     password = models.CharField(
         max_length=150,
@@ -40,16 +46,6 @@ class User(AbstractUser):
         ordering = ['username']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_follow'
-            ),
-            models.CheckConstraint(
-                name="Ограничение на самоподписку",
-                check=~models.Q(user=models.F('author')),
-            ),
-        ]
 
     def __str__(self):
         return self.username

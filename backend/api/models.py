@@ -1,29 +1,36 @@
 from colorfield.fields import ColorField
 from django.contrib.auth import get_user_model
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 
 User = get_user_model()
 
 
 class Tag(models.Model):
+    '''Тег -выбор из предустановленных.
+    Можно установить несколько тегов на один рецепт.
+    Поля Название, цветовой HEX-код, slug.'''
     name = models.CharField(
         unique=True,
-        max_length=20,
+        max_length=200,
         verbose_name='Название тега',
         help_text='Название тега',
     )
     color = ColorField(
         format='hex',
-        default='#FF0000',
+        max_length=7,
+        default='#С0С0С0',
         verbose_name='Цвет в hex-формате',
         help_text='Цвет в hex-формате',
     )
     slug = models.SlugField(
         unique=True,
-        max_length=20,
+        max_length=200,
         verbose_name='Slug',
         help_text='Slug тега',
+        validators=[RegexValidator(regex=r'^[\w.@+-]+$',
+                    message='Запрещенные символы в имени')]
     )
 
     class Meta:
@@ -35,15 +42,19 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
+    '''Ингридиенты рецепта.
+    Содержат обязательные поля:
+    название, количество, единицы измерения.
+    '''
     name = models.CharField(
         db_index=True,
-        max_length=50,
+        max_length=200,
         verbose_name='Название ингридиента',
         help_text='Название ингредиента',
     )
     measurement_unit = models.CharField(
         default='г',
-        max_length=10,
+        max_length=200,
         verbose_name='Единицы измерения',
         help_text='Единицы измерения',
     )
@@ -57,6 +68,16 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
+    '''Рецепт содержит обязательные поля.
+    Автор(пользователь), название, картинка,
+    текстовое описание, ингредиенты, тег (или несколько из предустановленных)
+    Время приготовления в минутах.
+    '''
+    tags = models.ManyToManyField(
+        Tag,
+        verbose_name='Тег',
+        help_text='Теги',
+    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -64,8 +85,15 @@ class Recipe(models.Model):
         verbose_name='Автор публикации',
         help_text='Автор рецепта',
     )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='IngredientAmount',
+        related_name='recipes',
+        verbose_name='Ингредиенты  для блюда',
+        help_text='Ингредиенты для блюда',
+    )
     name = models.CharField(
-        max_length=100,
+        max_length=200,
         verbose_name='Название рецепта',
         help_text='Название рецепта',
     )
@@ -77,25 +105,10 @@ class Recipe(models.Model):
         verbose_name='Описание рецепта',
         help_text='Описание рецепта',
     )
-    ingredients = models.ManyToManyField(
-        Ingredient,
-        through='IngredientAmount',
-        related_name='recipes',
-        verbose_name='Ингредиенты  для блюда',
-        help_text='Ингредиенты для блюда',
-    )
-    tags = models.ManyToManyField(
-        Tag,
-        verbose_name='Тег',
-        help_text='Теги',
-    )
     cooking_time = models.PositiveSmallIntegerField(
         validators=[
             MinValueValidator(
                 1, 'Время приготовления не может быть меньше 1 минуты!'
-            ),
-            MaxValueValidator(
-                180, 'Время приготовления не может быть более 3 часов!'
             )
         ],
         default=1,
@@ -181,10 +194,11 @@ class Subscription(models.Model):
         verbose_name_plural = 'Избранные авторы'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_relationships'
+                fields=['user', 'author'],
+                name='unique_follow'
             ),
             models.CheckConstraint(
-                name='prevent_self_follow',
+                name="Ограничение на самоподписку",
                 check=~models.Q(user=models.F('author')),
             ),
         ]
