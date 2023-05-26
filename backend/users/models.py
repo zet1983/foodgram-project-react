@@ -1,11 +1,10 @@
-from django.contrib.auth.models import AbstractUser
-from django.db import models
-from django.db.models import UniqueConstraint, CheckConstraint
-from django.core.validators import RegexValidator
-
-from users.validators import check_username
 from django.conf import settings
-from users.validators import UserNameValidator
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import RegexValidator
+from django.db import models
+from django.db.models import CheckConstraint, UniqueConstraint
+
+from users.validators import UserNameValidator, check_username
 
 regex_validator = UserNameValidator()
 

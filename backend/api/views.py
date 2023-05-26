@@ -4,21 +4,20 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, viewsets
-from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView
 from rest_framework.decorators import action
+from rest_framework.generics import ListAPIView
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from api.serializers import (FavoriteSerializer, IngredientSerializer,
-                             RecipeListSerializer, RecipesWriteSerializer,
-                             TagsSerializer, FollowSerializer)
-from recipes.models import (Favorite, Ingredient, Recipes, ShoppingCart,
-                            Tags)
 from api.filters import IngredientFilter, RecipeFilter
-from api.permissions import IsAuthorOrReadOnly
 from api.paginators import CustomPagination
+from api.permissions import IsAuthorOrReadOnly
+from api.serializers import (FavoriteSerializer, FollowSerializer,
+                             IngredientSerializer, RecipeListSerializer,
+                             RecipesWriteSerializer, TagsSerializer)
+from recipes.models import Favorite, Ingredient, Recipes, ShoppingCart, Tags
 
 User = get_user_model()
 
