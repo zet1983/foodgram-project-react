@@ -94,11 +94,14 @@ class RecipesViewSet(viewsets.ModelViewSet):
             'recipe__amount__ingredient__measurement_unit'
         ).annotate(amount=Sum('recipe__amount__amount'))
         shopping_list = 'Список покупок: \n'
+        count_ingredients = 0
         for ingr in ingredients:
+            count_ingredients += 1
             shopping_list += (
-                f'{ingr["recipe__amount__ingredient__name"]} '
-                f'({ingr["recipe__amount__ingredient__measurement_unit"]}) - '
-                f'{ingr["amount"]} \n'
+                f'{count_ingredients}) '
+                f'{ingr["recipe__amount__ingredient__name"]} - '
+                f'{ingr["amount"]} '
+                f'({ingr["recipe__amount__ingredient__measurement_unit"]}) \n'
             )
         response = HttpResponse(shopping_list, 'Content-Type: text/plain')
         response['Content-Disposition'] = (
