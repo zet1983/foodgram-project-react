@@ -65,7 +65,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-#postgres
+# postgres
 # DATABASES = {
 #     'default': {
 #         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
@@ -148,3 +148,9 @@ REST_FRAMEWORK = {
 
 MAX_LENGTH_EMAIL = 254
 MAX_LENGTH_USER = 150
+MAX_LENGTH_INGREDIENT = 150
+MAX_LENGTH_MEAS_UNIT = 16
+MAX_LENGTH_RECIPES = 200
+MAX_LENGTH_TAGS = 200
+MAX_LENGTH_TAGS_COLOR = 7
+MAX_LENGTH_TAGS_SLUG = 200

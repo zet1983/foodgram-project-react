@@ -1,23 +1,24 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, validate_slug
 from django.db import models
 
-from recipes import constants
-from recipes.validators import ColorValidator, WordNameValidator
+from recipes.validators import ColorValidator
+from users.validators import UserNameValidator
 
 User = get_user_model()
 
 
-regex_validator = WordNameValidator()
+regex_validator = UserNameValidator()
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=constants.MAX_LENGTH_INGREDIENT,
+    name = models.CharField(max_length=settings.MAX_LENGTH_INGREDIENT,
                             verbose_name='Название инградиента',
                             help_text='Введите название ингредиента',
                             validators=[regex_validator])
     measurement_unit = models.CharField(
-        max_length=constants.MAX_LENGTH_MEAS_UNIT,
+        max_length=settings.MAX_LENGTH_MEAS_UNIT,
         verbose_name='Единица измерения',
         help_text='Введите единицы измерения')
 
@@ -37,20 +38,20 @@ class Ingredient(models.Model):
 
 
 class Tags(models.Model):
-    name = models.CharField(max_length=constants.MAX_LENGTH_TAGS,
+    name = models.CharField(max_length=settings.MAX_LENGTH_TAGS,
                             unique=True,
                             verbose_name='Название тега',
                             help_text='Введите название тега',
                             validators=[regex_validator])
     color = models.CharField(
-        max_length=constants.MAX_LENGTH_TAGS_COLOR,
+        max_length=settings.MAX_LENGTH_TAGS_COLOR,
         unique=True,
         verbose_name='Цвет в HEX',
         help_text='Введите цвет тега в виде HEX-кода',
         validators=[ColorValidator]
     )
     slug = models.SlugField(
-        max_length=constants.MAX_LENGTH_TAGS_SLUG,
+        max_length=settings.MAX_LENGTH_TAGS_SLUG,
         unique=True,
         verbose_name='Слаг',
         help_text='Введите короткое название тега',
@@ -75,7 +76,7 @@ class Recipes(models.Model):
         related_name='recipe'
     )
     name = models.CharField(
-        max_length=constants.MAX_LENGTH_RECIPES,
+        max_length=settings.MAX_LENGTH_RECIPES,
         unique=True,
         verbose_name='Название рецепта',
         help_text='Введите название рецепта',
@@ -111,7 +112,7 @@ class Recipes(models.Model):
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipes, on_delete=models.CASCADE,
-        related_name='amount',
+        related_name='ingredient_amount',
         verbose_name='Рецепт',
         help_text='Рецепт',
     )

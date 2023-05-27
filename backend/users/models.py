@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import RegexValidator
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.db.models import CheckConstraint, UniqueConstraint
 
@@ -33,8 +33,9 @@ class User(AbstractUser):
         verbose_name='Имя пользователя',
         help_text='Имя пользователя',
         validators=[check_username,
-                    RegexValidator(regex=r'^[\w.@+-]+$',
-                                   message='Запрещенные символы в имени')])
+                    UnicodeUsernameValidator()
+                    ]
+        )
 
     class Meta:
         verbose_name = 'Пользователь'

@@ -83,7 +83,9 @@ class RecipesReadSerializer(serializers.ModelSerializer):
         return obj.image.url
 
     def get_ingredients(self, obj):
-        return RecipeIngredientReadSerializer(obj.amount.all(), many=True).data
+        return RecipeIngredientReadSerializer(
+            obj.ingredient_amount.all(), many=True
+        ).data
 
     def get_is_favorited(self, obj):
         request = self.context.get('request')
@@ -166,7 +168,7 @@ class RecipesWriteSerializer(serializers.ModelSerializer):
     def update(self, recipe, validated_data):
         if "ingredients" in validated_data:
             ingredients = validated_data.pop("ingredients")
-            recipe.amount.all().delete()
+            recipe.ingredient_amount.all().delete()
             self.add_ingredients(recipe, ingredients)
         tags = self.initial_data.pop("tags")
         recipe.tags.set(tags)
