@@ -65,7 +65,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-#postgres
+# postgres
 # DATABASES = {
 #     'default': {
 #         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
