@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-#SECRET_KEY = os.getenv('SECRET_KEY')
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'SECRET_KEY')
 DEBUG = bool(os.environ.get('DEBUG'))
 DEBUG = os.getenv('DEBUG', default=True)
