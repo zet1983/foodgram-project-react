@@ -35,7 +35,7 @@ class User(AbstractUser):
         validators=[check_username,
                     UnicodeUsernameValidator()
                     ]
-        )
+    )
 
     class Meta:
         verbose_name = 'Пользователь'
