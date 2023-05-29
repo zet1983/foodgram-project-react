@@ -32,20 +32,12 @@ class RecipeFilter(django_filters.FilterSet):
         model = Recipes
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
-    def _filter_related(self, queryset, value, related_manager):
-        if value and not self.request.user.is_anonymous:
-            recipe_ids = related_manager.values_list(
-                'recipe', flat=True
-            )
-            return queryset.filter(id__in=recipe_ids)
+    def filter_is_favorited(self, queryset, name, value):
+        if value and self.request.user.is_authenticated:
+            return queryset.filter(favorite__user=self.request.user)
         return queryset
 
-    def filter_is_favorited(self, queryset, name, value):
-        return self._filter_related(
-            queryset, value, self.request.user.favorites
-        )
-
     def filter_is_in_shopping_cart(self, queryset, name, value):
-        return self._filter_related(
-            queryset, value, self.request.user.shopping_cart
-        )
+        if value and self.request.user.is_authenticated:
+            return queryset.filter(shopping_cart__user=self.request.user)
+        return queryset
