@@ -14,7 +14,6 @@ class IngredientFilter(SearchFilter):
     def filter_queryset(self, request, queryset, view):
         search_value = request.query_params.get(self.search_param, '')
         if search_value:
-            # Используем Q-объекты для выполнения поиска по началу слова
             queryset = queryset.filter(Q(name__startswith=search_value))
         return queryset
 
