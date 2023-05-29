@@ -2,7 +2,7 @@ import django_filters
 from django.contrib.auth import get_user_model
 from rest_framework.filters import SearchFilter
 
-from recipes.models import Favorite, Recipes, ShoppingCart
+from recipes.models import Recipes
 
 User = get_user_model()
 
@@ -35,7 +35,7 @@ class RecipeFilter(django_filters.FilterSet):
 
     def filter_is_favorited(self, queryset, name, value):
         return self._filter_related(
-            queryset, value, self.request.user.favorite_recipes
+            queryset, value, self.request.user.favorites
         )
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
