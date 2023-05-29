@@ -20,7 +20,7 @@ services:
       - ./.env
 
   frontend:
-    image: zet1983/foodfront:latest
+    image: zet1983/frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
