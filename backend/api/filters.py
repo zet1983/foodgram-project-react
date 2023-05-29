@@ -1,3 +1,4 @@
+from django.db.models import Q
 import django_filters
 from django.contrib.auth import get_user_model
 from rest_framework.filters import SearchFilter
@@ -9,6 +10,13 @@ User = get_user_model()
 
 class IngredientFilter(SearchFilter):
     search_param = 'name'
+
+    def filter_queryset(self, request, queryset, view):
+        search_value = request.query_params.get(self.search_param, '')
+        if search_value:
+            # Используем Q-объекты для выполнения поиска по началу слова
+            queryset = queryset.filter(Q(name__startswith=search_value))
+        return queryset
 
 
 class RecipeFilter(django_filters.FilterSet):
