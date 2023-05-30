@@ -2,17 +2,13 @@ import django_filters
 from django.contrib.auth import get_user_model
 from rest_framework.filters import SearchFilter
 
-from recipes.models import Ingredient, Recipes
+from recipes.models import Recipes
 
 User = get_user_model()
 
 
 class IngredientFilter(SearchFilter):
     search_param = 'name'
-
-    class Meta:
-        model = Ingredient
-        fields = ('name',)
 
 
 class RecipeFilter(django_filters.FilterSet):
