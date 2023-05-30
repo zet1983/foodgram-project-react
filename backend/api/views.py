@@ -105,10 +105,10 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    permission_classes = (IsAuthorOrReadOnly,)
     pagination_class = None
     filter_backends = (IngredientFilter)
-    filterset_fields = ('name',)
-    search_fields = ('name')
+    search_fields = ('^name')
 
 
 class FollowUserView(APIView):
