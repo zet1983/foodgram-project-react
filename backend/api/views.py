@@ -75,18 +75,18 @@ class RecipesViewSet(viewsets.ModelViewSet):
             permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
         ingredients = request.user.shopping_cart.values(
-            'recipe__amount__ingredient__name',
-            'recipe__amount__ingredient__measurement_unit'
-        ).annotate(amount=Sum('recipe__amount__amount'))
+            'recipe__ingredients_amount__ingredient__name',
+            'recipe__ingredients_amount__ingredient__measurement_unit'
+        ).annotate(amount=Sum('recipe__ingredients_amount__amount'))
         shopping_list = 'Список покупок: \n'
         count_ingredients = 0
         for ingr in ingredients:
             count_ingredients += 1
             shopping_list += (
                 f'{count_ingredients}) '
-                f'{ingr["recipe__amount__ingredient__name"]} - '
+                f'{ingr["recipe__ingredients_amount__ingredient__name"]} - '
                 f'{ingr["amount"]} '
-                f'({ingr["recipe__amount__ingredient__measurement_unit"]}) \n'
+                f'({ingr["recipe__ingredients_amount__ingredient__measurement_unit"]}) \n'
             )
         response = HttpResponse(shopping_list, 'Content-Type: text/plain')
         response['Content-Disposition'] = (
