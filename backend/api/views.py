@@ -31,7 +31,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'favorite' or self.action == 'shopping_cart':
-            return FavoriteSerializer
+            return FollowSerializer
         return RecipesWriteSerializer
 
     def add_in_list(self, model, user, pk):
