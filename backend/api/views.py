@@ -14,7 +14,7 @@ from rest_framework.views import APIView
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
-from api.serializers import (FavoriteSerializer, FollowSerializer,
+from api.serializers import (FollowSerializer,
                              IngredientSerializer, RecipeListSerializer,
                              RecipesWriteSerializer, TagsSerializer)
 from recipes.models import Favorite, Ingredient, Recipes, ShoppingCart, Tags
