@@ -11,12 +11,6 @@ User = get_user_model()
 class IngredientFilter(SearchFilter):
     search_param = 'name'
 
-    def filter_queryset(self, request, queryset, view):
-        search_value = request.query_params.get(self.search_param, '')
-        if search_value:
-            queryset = queryset.filter(Q(name__startswith=search_value))
-        return queryset
-
 
 class RecipeFilter(django_filters.FilterSet):
     is_favorited = django_filters.BooleanFilter(method='filter_is_favorited')
