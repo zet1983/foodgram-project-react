@@ -34,7 +34,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
             return FavoriteSerializer
         return RecipesWriteSerializer
 
-    def retrieve(self, serializer):
+    def list(self, serializer):
         serializer.save(author=self.request.user)
 
     def add_in_list(self, model, user, pk):
