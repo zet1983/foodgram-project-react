@@ -34,6 +34,9 @@ class RecipesViewSet(viewsets.ModelViewSet):
             return FavoriteSerializer
         return RecipesWriteSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
     def add_in_list(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
             return Response(
