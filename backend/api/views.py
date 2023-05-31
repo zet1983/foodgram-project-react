@@ -31,11 +31,8 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'favorite' or self.action == 'shopping_cart':
-            return FavoriteSerializer
+            return FavoriteSerializer(author=self.request.user)
         return RecipesWriteSerializer
-
-    def list(self, serializer):
-        serializer.save(author=self.request.user)
 
     def add_in_list(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
