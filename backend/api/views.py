@@ -30,7 +30,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination
 
     def get_serializer_class(self):
-        if self.action == 'favorite' or self.action == 'shopping_cart':
+        if self.action == 'list':
             return FavoriteSerializer
         return RecipesWriteSerializer
 
