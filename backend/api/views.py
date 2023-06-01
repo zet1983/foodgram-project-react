@@ -31,7 +31,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return RecipesReadSerializer
+            return RecipesWriteSerializer
         return RecipesWriteSerializer
 
     def add_in_list(self, model, user, pk):
