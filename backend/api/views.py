@@ -15,7 +15,7 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.serializers import (FollowSerializer, IngredientSerializer,
-                             RecipeListSerializer, RecipesReadSerializer,
+                             RecipeListSerializer,
                              RecipesWriteSerializer, TagsSerializer)
 from recipes.models import Favorite, Ingredient, Recipes, ShoppingCart, Tags
 
