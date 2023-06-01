@@ -14,8 +14,8 @@ from rest_framework.views import APIView
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
-from api.serializers import (FollowSerializer,
-                             IngredientSerializer, RecipeListSerializer,
+from api.serializers import (FollowSerializer, IngredientSerializer,
+                             RecipeListSerializer, RecipesReadSerializer,
                              RecipesWriteSerializer, TagsSerializer)
 from recipes.models import Favorite, Ingredient, Recipes, ShoppingCart, Tags
 
@@ -31,7 +31,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.action == 'list':
-            return RecipesWriteSerializer
+            return RecipesReadSerializer
         return RecipesWriteSerializer
 
     def add_in_list(self, model, user, pk):
