@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import F
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserSerializer
 from drf_extra_fields.fields import Base64ImageField
@@ -241,3 +242,50 @@ class FollowSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, obj):
         return obj.author.recipe.all().count()
+
+
+class Recipe1Serializer(serializers.ModelSerializer):
+    author = UserSerializer(read_only=True)
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tags.objects.all()
+    )
+    ingredients = serializers.SerializerMethodField()
+    image = Base64ImageField()
+    is_favorited = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        tags_data = TagsSerializer(instance.tags.all(), many=True).data
+        representation['tags'] = tags_data
+        return representation
+
+    def get_is_favorited(self, obj):
+        return obj.in_favorites.filter(
+            author=self.context['request'].user).exists()
+
+    def get_is_in_shopping_cart(self, obj):
+        return obj.in_carts.filter(author=self.context['request'].user).exists()
+
+    def get_ingredients(self, obj):
+        return obj.ingredients.values(
+            'id', 'name', 'measurement_unit', amount=F(
+                'ingredients_amount__amount'
+            )
+        )
+
+    class Meta:
+        model = Recipes
+        fields = (
+            "id",
+            "tags",
+            "author",
+            "ingredients",
+            "is_favorited",
+            "is_in_shopping_cart",
+            "name",
+            "image",
+            "text",
+            "cooking_time",
+        )
