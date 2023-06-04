@@ -15,7 +15,7 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import CustomPagination
 from api.permissions import IsAuthorOrReadOnly
 from api.serializers import (FollowSerializer, IngredientSerializer,
-                             Recipe1Serializer, RecipeListSerializer,
+                             FavoriteSerializer, RecipeListSerializer,
                              RecipesWriteSerializer, TagsSerializer)
 from recipes.models import Favorite, Ingredient, Recipes, ShoppingCart, Tags
 
@@ -26,13 +26,29 @@ class RecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipes.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filter_class = RecipeFilter
+    filterset_fields = ('tags',)
     permission_classes = (IsAuthorOrReadOnly,)
     pagination_class = CustomPagination
 
     def get_serializer_class(self):
-        if self.action == 'list':
-            return Recipe1Serializer
+        if self.action == 'favorite' or self.action == 'shopping_cart':
+            return FavoriteSerializer
         return RecipesWriteSerializer
+
+    def get_queryset(self):
+        queryset = Recipes.objects.all()
+        author = self.request.user
+        if self.request.GET.get('is_favorited'):
+            favorite_recipes_ids = Favorite.objects.filter(
+                user=author).values('recipe_id')
+
+            return queryset.filter(pk__in=favorite_recipes_ids)
+
+        if self.request.GET.get('is_in_shopping_cart'):
+            cart_recipes_ids = ShoppingCart.objects.filter(
+                user=author).values('recipe_id')
+            return queryset.filter(pk__in=cart_recipes_ids)
+        return queryset
 
     def add_in_list(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
