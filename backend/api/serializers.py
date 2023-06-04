@@ -266,7 +266,8 @@ class Recipe1Serializer(serializers.ModelSerializer):
             author=self.context['request'].user).exists()
 
     def get_is_in_shopping_cart(self, obj):
-        return obj.in_carts.filter(author=self.context['request'].user).exists()
+        return obj.shopping_cart.filter(
+            author=self.context['request'].user).exists()
 
     def get_ingredients(self, obj):
         return obj.ingredients.values(
